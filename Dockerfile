@@ -22,6 +22,12 @@ $(. /etc/os-release && echo "$VERSION_CODENAME") stable" | \
 RUN apt-get update && \
     apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin -y
 
+# Install Rust
+COPY /app /app
+RUN curl "https://sh.rustup.rs" -o /app/rustup-init.sh && \
+    chmod 770 /app/rustup-init.sh
+RUN /app/rustup-init.sh -y
+
 # Organize Files
 COPY runtime.sh runtime.sh
 COPY html /var/www/html/
@@ -30,5 +36,4 @@ RUN rm /var/www/html/index.nginx-debian.html
 # Fix permissions
 RUN chmod 770 runtime.sh 
 
-# CMD ["/bin/bash", "runtime.sh"]
-ENTRYPOINT [ "/usr/sbin/nginx" ]
+CMD ["/bin/bash", "runtime.sh"]
