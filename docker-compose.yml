@@ -1,0 +1,30 @@
+services:
+  app:
+    image: jelliefrontier/jgsm:latest
+    container_name: jgsm
+    networks:
+      jgsm:
+        ipv4_address: 172.80.0.2
+    ports:
+      - 80:80
+
+  postgres:
+    image: postgres:16
+    container_name: jgsm-db
+    environment:
+      - POSTGRES_USER=jgsm
+      - POSTGRES_PASSWORD=pV28QCWPXOJzr9593D2ETW
+      - POSTGRES_DB=jgsm
+      - PGDATA=/var/lib/postgresql/data/pgdata
+    networks:
+      jgsm:
+        ipv4_address: 172.80.0.3
+    healthcheck:
+      test: ['CMD', 'pg_isready', '-U', 'postgres']
+    restart: unless-stopped
+
+networks:
+  jgsm:
+    ipam:
+      config:
+        - subnet: 172.80.0.0/24
